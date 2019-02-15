@@ -1,0 +1,25 @@
+#global_costmap:
+#  global_frame: map
+#  robot_base_frame: Jacto_01_base
+#  update_frequency: 5.0
+#  static_map: true
+##  width: 5
+#  height: 5
+#  resolution: 0.2
+#  plugins:
+#    - {name: static_layer,            type: "costmap_2d::StaticLayer"}
+#    - {name: obstacle_layer,          type: "costmap_2d::VoxelLayer"}
+#    - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}
+global_costmap:
+  global_frame: /map
+  robot_base_frame: /Mirela_base
+  update_frequency: 3.0 # mudei pra 3 mas era 5
+  publish_frequency: 5.0
+  static_map: true
+  width: 3
+  height: 3
+  resolution: 0.2
+  plugins:
+    - {name: static_layer,            type: "costmap_2d::StaticLayer"}
+    - {name: obstacle_layer,          type: "costmap_2d::VoxelLayer"}
+    - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}

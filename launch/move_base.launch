@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<launch>
+<arg name="robot_name"/>
+<arg name="odom_topic" default="$(arg robot_name)/odom_filtered" />
+<!--   
+   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find roboga)/config/move_base_params.yaml" command="load" />
+    <rosparam file="$(find roboga)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find roboga)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find roboga)/config/local_costmap_params.yaml" command="load" />
+    <param name="local_costmap/width" value="5.0"/>
+    <param name="local_costmap/height" value="5.0"/>
+    <rosparam file="$(find roboga)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find roboga)/config/teb_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find roboga)/config/global_planner_params.yaml" command="load" />
+
+    <param name="base_global_planner" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+    <param name="controller_frequency" value="3.0" />
+    <param name="controller_patience" value="5.0" />
+    <param name="clearing_rotation_allowed" value="false" /> 
+    <remap from="odom" to="$(arg odom_topic)"/>
+    <remap from="cmd_vel" to="$(arg robot_name)/cmd_vel"/>
+  </node> -->
+
+
+
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+      <rosparam file="$(find roboga)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find roboga)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find roboga)/config/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find roboga)/config/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find roboga)/config/teb_local_planner_params.yaml" command="load" />
+      <rosparam file="$(find roboga)/config/global_planner_params.yaml" command="load" />
+      <param name="base_global_planner" value="navfn/NavfnROS" />
+     <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+      <param name="controller_frequency" value="10.0" />
+      <param name="controller_patience" value="5.0" />
+	<param name="max_planning_retries" value="3" />
+
+      <param name="clearing_rotation_allowed" value="false" /> 
+  		<remap from="odom" to="$(arg odom_topic)"/>
+      <remap from="cmd_vel" to="$(arg robot_name)/cmd_vel"/>
+    </node>
+
+
+</launch>

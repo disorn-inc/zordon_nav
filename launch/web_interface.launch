@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+<arg name="port_n" default="9090"/>
+<include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" > 
+   <arg name="port" value="$(arg port_n)"/>
+</include>
+
+<node name="route_service" pkg="roboga" type="route_service.py" respawn="false" output="screen"/>
+
+<node name="move_to_goal" pkg="roboga" type="MoveTBtoGoalPoints.py" respawn="false" output="screen"/>
+
+</launch>

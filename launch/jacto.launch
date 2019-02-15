@@ -1,0 +1,228 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Jacto ID -->
+    <arg name="jactoID" value="Jacto_01" /> <!-- ID do robo -->
+    <arg name="camera_model"          default="0" /> <!-- 0=ZED, 1=ZEDM-->
+    <arg name="svo_file"              default="" /><!-- <arg name="svo_file" default="path/to/svo/file.svo"> -->
+    <arg name="zed_id"                default="0" />
+    <!-- If a ZED SN is given, zed_id is ignored and the wrapper will specifically look for the ZED with the corresponding serial number -->
+    <arg name="serial_number"                default="0" />
+
+    <!-- GPU ID-->
+    <arg name="gpu_id"                default="-1" />
+    <!-- Definition coordinate frames -->
+    <arg name="publish_tf"            default="false" />
+    <arg name="odometry_frame"        default="$(arg jactoID)_odom" />
+    <arg name="base_frame"            default="$(arg jactoID)_base" />
+    <arg name="camera_frame"          default="$(arg jactoID)_zed" />
+    <arg name="depth_frame"           default="zed_depth_camera" />
+    <!-- Publish urdf zed -->
+    <arg name="publish_urdf"          default="false" />'
+
+    <!-- ZED -->
+    <node name="zed_wrapper_node" pkg="zed_wrapper" type="zed_wrapper_node" required="true"><!-- launch-prefix="valgrind" -->
+
+        <param name="camera_model" value="$(arg camera_model)" />
+        <!-- publish odometry frame -->
+        <param name="publish_tf"            value="$(arg publish_tf)" />
+        <!-- Configuration frame camera -->
+	      <param name="pose_frame"            value="map" />
+        <param name="odometry_frame"        value="$(arg odometry_frame)" />
+        <param name="base_frame"            value="$(arg base_frame)" />
+        <param name="camera_frame"          value="$(arg camera_frame)" />
+        <param name="depth_frame"           value="$(arg depth_frame)" />
+
+        <!-- SVO file path -->
+        <param name="svo_filepath"          value="$(arg svo_file)" />
+
+        <!-- ZED parameters -->
+        <param name="zed_id"                value="$(arg zed_id)" />
+        <param name="serial_number"      value="$(arg serial_number)" />
+
+        <param name="resolution"            value="3" />
+        <param name="quality"               value="1" />
+        <param name="sensing_mode"          value="0" />
+        <!--<param name="frame_rate"            value="15" />-->
+        <param name="frame_rate"            value="30" />
+        <param name="odometry_db"           value="" />
+        <param name="openni_depth_mode"     value="1" />
+        <param name="gpu_id"                value="-1" />
+        <param name="confidence"            value="100" />
+        <param name="gain"                  value="100" />
+        <param name="exposure"              value="100" />
+        <param name="auto_exposure"         value="true" />
+        <param name="depth_stabilization"   value="1" />
+
+        <!-- ROS topic names -->
+        <param name="rgb_topic"             value="$(arg jactoID)/Zed/rgb/image_rect_color" />
+        <param name="rgb_raw_topic"         value="$(arg jactoID)/Zed/rgb/image_raw_color" />
+        <param name="rgb_cam_info_topic"    value="$(arg jactoID)/Zed/rgb/camera_info" />
+        <param name="rgb_cam_info_raw_topic"    value="$(arg jactoID)/Zed/rgb/camera_info_raw" />
+
+        <param name="left_topic"            value="$(arg jactoID)/Zed/left/image_rect_color" />
+        <param name="left_raw_topic"        value="$(arg jactoID)/Zed/left/image_raw_color" />
+        <param name="left_cam_info_topic"   value="$(arg jactoID)/Zed/left/camera_info" />
+        <param name="left_cam_info_raw_topic"   value="$(arg jactoID)/Zed/left/camera_info_raw" />
+
+        <param name="right_topic"           value="$(arg jactoID)/Zed/right/image_rect_color" />
+        <param name="right_raw_topic"       value="$(arg jactoID)/Zed/right/image_raw_color" />
+        <param name="right_cam_info_topic"  value="$(arg jactoID)/Zed/right/camera_info" />
+        <param name="right_cam_info_raw_topic"  value="$(arg jactoID)/Zed/right/camera_info_raw" />
+
+        <param name="depth_topic"           value="$(arg jactoID)/Zed/depth/depth_registered" />
+        <param name="depth_cam_info_topic"  value="$(arg jactoID)/Zed/depth/camera_info" />
+
+        <param name="point_cloud_topic"     value="$(arg jactoID)/Zed/point_cloud/cloud_registered" />
+
+        <param name="odometry_topic"        value="$(arg jactoID)/Zed/odom" />
+
+    </node>
+
+    <!-- ROS URDF description of the ZED -->
+    <group if="$(arg publish_urdf)">
+        <param if="$(arg camera_model)" name="zed_description" textfile="$(find zed_wrapper)/urdf/zedm.urdf" />
+        <param unless="$(arg camera_model)" name="zed_description" textfile="$(find zed_wrapper)/urdf/zed.urdf" />
+        <node name="zed_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+            <remap from="robot_description" to="zed_description" />
+        </node>
+    </group>
+    <!--ZED  ENDED-->
+
+    <!-- OpenCR -->
+    <node pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM0" name="serial_node" respawn="true"/>
+
+    <!-- MAP SERVER --> 
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find jacto)/map/mymap1.yaml" output="screen">
+      <param name="frame_id" value="/map"/>
+    </node>
+
+    <!-- LIDAR -->
+    <node pkg="hls_lfcd_lds_driver" type="hlds_laser_publisher" name="Lidar2D_driver">
+      <param name="port" value="/dev/ttyUSB0"/>
+      <param name="frame_id" value="$(arg jactoID)_lidar"/>
+      <remap from="scan" to="$(arg jactoID)/Lidar2D/LidarScan"/>
+    </node>
+
+    <!-- GMAPPING --> 
+    <node pkg="gmapping" type="slam_gmapping" name="jacto_slam_gmapping" >
+      <remap from="scan" to="$(arg jactoID)/Lidar2D/LidarScan"/>
+      <param name="base_frame" type="string" value="$(arg jactoID)_base" />
+      <param name="odom_frame" type="string" value="$(arg jactoID)_odom" />
+      <param name="map_update_interval" value="2"/>
+      <param name="maxUrange" value="3.0"/>
+      <param name="sigma" value="0.05"/>
+      <param name="kernelSize" value="1"/>
+      <param name="lstep" value="0.05"/>
+      <param name="astep" value="0.05"/>
+      <param name="iterations" value="5"/>
+      <param name="lsigma" value="0.075"/>
+      <param name="ogain" value="3.0"/>
+      <param name="lskip" value="0"/>
+      <param name="minimumScore" value="50"/>
+      <param name="srr" value="0.1"/>
+      <param name="srt" value="0.2"/>
+      <param name="str" value="0.1"/>
+      <param name="stt" value="0.2"/>
+      <param name="linearUpdate" value="1.0"/>
+      <param name="angularUpdate" value="0.2"/>
+      <param name="temporalUpdate" value="0.5"/>
+      <param name="resampleThreshold" value="0.5"/>
+      <param name="particles" value="50"/>
+      <param name="xmin" value="-5.0"/>
+      <param name="ymin" value="-5.0"/>
+      <param name="xmax" value="5.0"/>
+      <param name="ymax" value="5.0"/>
+      <param name="delta" value="0.01"/>
+      <param name="llsamplerange" value="0.01"/>
+      <param name="llsamplestep" value="0.01"/>
+      <param name="lasamplerange" value="0.005"/>
+      <param name="lasamplestep" value="0.005"/>
+    </node>
+    
+
+    <node name="tf_broadcaster" pkg="jacto" type="tf_publisher.py" respawn="false" output="screen" >
+      <param name="robot_name" type="string" value="$(arg jactoID)" />
+    </node>    
+
+    <arg name="odom_topic" default="$(arg jactoID)/odom_filtered" />
+
+    
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+      <rosparam file="$(find jacto)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find jacto)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(find jacto)/config/local_costmap_params.yaml" command="load" />
+      <rosparam file="$(find jacto)/config/global_costmap_params.yaml" command="load" />
+      <rosparam file="$(find jacto)/config/teb_local_planner_params.yaml" command="load" />
+
+      <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+      <param name="planner_frequency" value="3.0" />
+      <param name="planner_patience" value="10.0" />
+
+      <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+      <param name="controller_frequency" value="5.0" />
+      <param name="controller_patience" value="10.0" />
+	<param name="max_planning_retries" value="3" />
+
+      <param name="clearing_rotation_allowed" value="false" /> 
+  		<remap from="odom" to="$(arg odom_topic)"/>
+      <remap from="cmd_vel" to="$(arg jactoID)/cmd_vel"/>
+    </node>
+<!-- Our carlike robot is not able to rotate in place -->
+
+
+<node pkg="robot_localization" type="ekf_localization_node" name="ekf_odom">
+	<param name="sensor_timeout" value="0.1"/>
+	<param name="frequency" value="100"/>
+	<param name="two_d_mode" type="bool" value="true"/>
+	<param name="imu0_remove_gravitational_acceleration" value="true"/>
+
+    	<param name="odom1" value= "$(arg jactoID)/Zed/odom"/>
+    	<param name="odom0" value= "$(arg jactoID)/wheels_odom"/>
+    	<param name="imu0" value= "$(arg jactoID)/imu"/>
+    	<remap from="odometry/filtered" to="$(arg odom_topic)"/>
+    	<remap from="accel/filtered" to="$(arg jactoID)/accel_filtered"/>
+
+    	<param name="odom_frame" value= "$(arg jactoID)_odom"/>
+    	<param name="base_link_frame" value= "$(arg jactoID)_base"/>
+    	<param name="world_frame" value= "$(arg jactoID)_odom"/>
+    	<param name="map_frame" value= "map"/>
+        <rosparam param="imu0_config"> [false, false, false,   <!-- x,y,z -->
+                                       false, false, false,      <!-- roll, pitch, yaw -->
+                                       false, false, false,   <!-- x,y,z velocities -->
+                                       false, false, false,   <!-- roll, pitch , yaw velocity -->
+                                       false, false, false ] <!-- x,y,z acceleration -->
+      </rosparam>
+        <rosparam param="odom0_config">[true, true, false, <!-- x,y,z -->
+                                       false, false, true, <!-- roll, pitch, yaw -->
+                                       true, true, false,  <!-- x,y,z velocities -->
+                                       false, false, true,  <!-- roll, pitch , yaw velocity -->
+                                       false, false, false ] <!-- x,y,z acceleration -->
+       </rosparam>
+        <rosparam param="odom1_config">[true, true, false,    <!-- x,y,z -->
+                                       false, false, true,    <!-- roll, pitch, yaw -->
+                                       true, true, false,   <!-- x,y,z velocities -->
+                                       false, false, true,   <!-- roll, pitch , yaw velocity -->
+                                       false, false, false ]  <!-- x,y,z acceleration -->
+      </rosparam>
+    	<param name="odom0_differential" value="false"/>
+	<param name="odom1_differential" value="true"/>        
+	<param name="imu0_differential" value="true"/>
+	<param name="odom0_queue_size" value="20"/> 
+	<param name="odom1_queue_size" value="20"/>
+  	<param name="imu0_queue_size" value="20"/>
+	<param name="print_diagnostics" value="true"/>
+	
+	<!--<param name="use_control" value="true"/>
+	<param name="odom1_pose_rejection_threshold" value="5"/>
+  	<param name="odom1_twist_rejection_threshold" value="0.5"/>
+	<param name="odom0_pose_rejection_threshold" value="0.01"/>
+  	<param name="odom0_twist_rejection_threshold" value="0"/>
+	<param name="odom1_pose_rejection_threshold" value="0.01"/>
+  	<param name="odom1_twist_rejection_threshold" value="0"/>
+  	<param name="imu0_pose_rejection_threshold" value="0.05"/>
+  	<param name="imu0_twist_rejection_threshold" value="0"/>
+ 	<param name="imu0_linear_acceleration_rejection_threshold" value="0.1"/>-->
+    </node>
+
+
+</launch>

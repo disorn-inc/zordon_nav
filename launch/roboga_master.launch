@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<launch>
+<arg name="acml" default="true"/>
+<arg name="robot_ID" default="Mirela"/>
+<arg name = "map" default="my_map"/>
+<!-- **********************************************************************-->
+<!-- *************************** HARDWARE STACK ***************************-->
+<include file="$(find roboga)/launch/hardware.launch">
+    <arg name="robot_name" value="$(arg robot_ID)"/>
+</include>
+<!-- ********************************************************************** -->
+<!--  ************************ LOCALIZATION STACK  ************************-->
+<include file="$(find roboga)/launch/ekf_localization.launch">
+    <arg name="robot_name" value="$(arg robot_ID)"/>
+</include>
+<!-- ********************************************************************** -->
+<!-- ************************* SLAM ou MAP SERVER ************************* -->
+<!-- -->
+<group if="$(arg acml)">
+    <include file="$(find roboga)/launch/amcl.launch">
+        <arg name="robot_name" value="$(arg robot_ID)"/>
+	<arg name = "map_name" value = "$(arg map)"/>
+    </include>
+</group>
+
+<group unless="$(arg acml)">
+    <include file="$(find roboga)/launch/gmapping.launch">
+        <arg name="robot_name" value="$(arg robot_ID)"/>
+    </include>
+</group>
+<!-- ********************************************************************** -->
+<!-- ************************** NAVIGATION STACK ************************** -->
+<include file="$(find roboga)/launch/move_base.launch">
+    <arg name="robot_name" value="$(arg robot_ID)"/>
+</include>
+<!-- ********************************************************************** -->
+<!-- ************************ INTERFACE WEB STACK ************************* -->
+<!---->
+<!--<include file="$(find roboga)/launch/web_interface.launch" > 
+   <arg name="port_n" value="9090"/>
+</include>
+-->
+<!-- ********************************************************************** -->
+<!-- ********************************************************************** -->
+
+</launch>
