@@ -6,6 +6,8 @@
 	<arg name="robot_name" value="$(arg robot_name)" />
 	<arg name="robotID" value="$(arg robot_name)" />
 </include>
+<!-- Virtual Odom -->
+<node pkg="roboga" type="virtual_odom_node" name="virtual_odom" />
 <!-- OpenCR -->
 <node pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM0" name="serial_node" respawn="true"/>
 <!-- LIDAR -->

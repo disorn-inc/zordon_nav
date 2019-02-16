@@ -9,6 +9,8 @@ project(roboga)
 ## is used, also find other catkin packages
 find_package(OpenCV 3 REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  nav_msgs  
   cv_bridge
   roslib
   rospy

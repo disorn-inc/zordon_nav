@@ -1,7 +1,6 @@
 #include "ros/ros.h"
 #include <nav_msgs/Odometry.h>
 #include <math.h>
-#include <ctime.h>
 
 #define WHEEL_RADIUS 0.051
 #define WHEELS_DISTANCE 0.35
@@ -17,20 +16,20 @@ const std::string odometry_msg_frame_id = PREFIX_MSG + "_odom";
 const std::string cmd_vel_msg_name = PREFIX_MSG + "/cmd_vel";
 
 struct Velocity {
-	double liner = 0;
+	double linear = 0;
 	double angular = 0;
-}
+};
 
 struct Pose {
 	double x = 0;
 	double y = 0;
 	double theta = 0;
-}
+};
 
-Velocity baseVelocity;
-Pose basePose;
+struct Velocity baseVelocity;
+struct Pose basePose;
 
-void commandVelocityCallback(const geometry_msgs::Twist::ConstPtr & msg)
+void commandVelocityCallback(const geometry_msgs::Twist& msg)
 {
 	baseVelocity.linear = msg.linear.x;
 	baseVelocity.angular = msg.angular.z;	
@@ -40,12 +39,13 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "virtual_odom");
 	ros::NodeHandle n;
-	ros::Publisher odometry_msg_pub = n.advertise<nav_msgs::Odometry>(odometry_msg_name.c_str(), 1);
-	ros::Subscriber cmd_vel_sub = n.subscribe(cmd_vel_msg_name.c_str(), commandVelocityCallback);
+	ros::Publisher odometry_msg_pub = n.advertise<nav_msgs::Odometry>("Mirela/wheels_odom", 1);
+	ros::Subscriber cmd_vel_sub = n.subscribe("Mirela/cmd_vel", 1000, &commandVelocityCallback);
 	ros::Rate loop_rate(10);
 
-	std::clock_t time_last = 0;
-	std::clock_t time_now = std::clock();
+
+	double time_now = ros::Time::now().toSec();
+	double time_last = 0;	
 
 	while (ros::ok()) {
 		
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 			basePose.y = basePose.y + time_elapsed * WHEEL_RADIUS * baseVelocity.linear * sin(basePose.theta);
 			basePose.theta = basePose.theta + time_elapsed * baseVelocity.angular * WHEEL_RADIUS;
 		*/
-		double time_elapsed = double(time_now - time_last) / CLOCKS_PER_SEC;
+		double time_elapsed = time_now - time_last;
 		time_last = time_now;
 		
 		basePose.x = basePose.x + time_elapsed * WHEEL_RADIUS * baseVelocity.linear * cos(basePose.theta);
@@ -77,9 +77,9 @@ int main(int argc, char **argv)
 		//odometry_msg.pose.covariance[0]  = 0.2; ///< x
 		//odometry_msg.pose.covariance[7]  = 0.2; ///< y
 		//odometry_msg.pose.covariance[35] = 0.4; ///< yaw
-		odometry_msg.header.stamp = n.now();
+		odometry_msg.header.stamp = ros::Time::now();
 
-		odometry_msg_pub.publish(&odometry_msg);
+		odometry_msg_pub.publish(odometry_msg);
 
 		ros::spinOnce();
 		loop_rate.sleep();
