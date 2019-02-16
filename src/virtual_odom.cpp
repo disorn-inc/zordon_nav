@@ -1,6 +1,7 @@
 #include "ros/ros.h"
 #include <nav_msgs/Odometry.h>
 #include <math.h>
+#include <ctime.h>
 
 #define WHEEL_RADIUS 0.051
 #define WHEELS_DISTANCE 0.35
@@ -43,6 +44,9 @@ int main(int argc, char **argv)
 	ros::Subscriber cmd_vel_sub = n.subscribe(cmd_vel_msg_name.c_str(), commandVelocityCallback);
 	ros::Rate loop_rate(10);
 
+	std::clock_t time_last = 0;
+	std::clock_t time_now = std::clock();
+
 	while (ros::ok()) {
 		
 		/*** Calculo da posicao e da orientacao
@@ -50,6 +54,9 @@ int main(int argc, char **argv)
 			basePose.y = basePose.y + time_elapsed * WHEEL_RADIUS * baseVelocity.linear * sin(basePose.theta);
 			basePose.theta = basePose.theta + time_elapsed * baseVelocity.angular * WHEEL_RADIUS;
 		*/
+		double time_elapsed = double(time_now - time_last) / CLOCKS_PER_SEC;
+		time_last = time_now;
+		
 		basePose.x = basePose.x + time_elapsed * WHEEL_RADIUS * baseVelocity.linear * cos(basePose.theta);
 		basePose.y = basePose.y + time_elapsed * WHEEL_RADIUS * baseVelocity.linear * sin(basePose.theta);
 		basePose.theta = basePose.theta + time_elapsed * baseVelocity.angular * WHEEL_RADIUS;
@@ -70,7 +77,7 @@ int main(int argc, char **argv)
 		//odometry_msg.pose.covariance[0]  = 0.2; ///< x
 		//odometry_msg.pose.covariance[7]  = 0.2; ///< y
 		//odometry_msg.pose.covariance[35] = 0.4; ///< yaw
-		odometry_msg.header.stamp = nh.now();
+		odometry_msg.header.stamp = n.now();
 
 		odometry_msg_pub.publish(&odometry_msg);
 
