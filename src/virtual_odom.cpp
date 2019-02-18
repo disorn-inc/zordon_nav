@@ -1,8 +1,10 @@
 #include "ros/ros.h"
+#include <stdlib.h>
+#include <time.h>
 #include <nav_msgs/Odometry.h>
 #include <math.h>
 
-#define WHEEL_RADIUS 0.0251
+#define WHEEL_RADIUS 0.024
 #define WHEELS_DISTANCE 0.25
 
 const std::string PREFIX_MSG = "Mirela";
@@ -29,6 +31,10 @@ struct Pose {
 struct Velocity baseVelocity = {0,0};
 struct Pose basePose = {0,0,0};
 
+float randomNumber(float Min, float Max)
+{
+    return ((float(rand()) / float(RAND_MAX)) * (Max - Min)) + Min;
+}
 void commandVelocityCallback(const geometry_msgs::Twist& msg)
 {
 	baseVelocity.linear = msg.linear.x;
@@ -37,11 +43,25 @@ void commandVelocityCallback(const geometry_msgs::Twist& msg)
 
 int main(int argc, char **argv)
 {
+	srand (time(NULL));	
+
 	ros::init(argc, argv, "virtual_odom");
 	ros::NodeHandle n;
 	ros::Publisher odometry_msg_pub = n.advertise<nav_msgs::Odometry>("Mirela/wheels_odom", 1);
 	ros::Subscriber cmd_vel_sub = n.subscribe("Mirela/cmd_vel", 1000, &commandVelocityCallback);
 	ros::Rate loop_rate(100);
+
+	odometry_msg.header.frame_id = "Mirela_odom";
+	odometry_msg.child_frame_id = "Mirela_base";
+
+	double diagonal_value = 0.01;
+	for(int i = 0; i < 36; i++) {
+		if(i == 0 || i == 7 || i == 14 ||
+			i == 21 || i == 28 || i == 35)
+			odometry_msg.twist.covariance[i] = diagonal_value;
+		else
+			odometry_msg.twist.covariance[i] = 0;
+	}
 
 
 	double time_last = 0;	
@@ -56,15 +76,23 @@ int main(int argc, char **argv)
 		double time_now = ros::Time::now().toSec();
 		double time_elapsed = time_now - time_last;
 		time_last = time_now;
+		double error_linear = randomNumber(-0.001, 0.001);
+		double error_angular = randomNumber(-0.005, 0.005);	
+		double linear = 0;
+		double angular = 0;
+		if(baseVelocity.linear != 0.0)
+			linear = baseVelocity.linear + error_linear;	
+		if(baseVelocity.angular != 0.0)
+			angular = baseVelocity.angular + error_angular;
 		
-		basePose.x = basePose.x + time_elapsed * baseVelocity.linear * cos(basePose.theta);
-		basePose.y = basePose.y + time_elapsed * baseVelocity.linear * sin(basePose.theta);
-		basePose.theta = basePose.theta + time_elapsed * baseVelocity.angular  * 2;
+		basePose.x = basePose.x + time_elapsed * linear * cos(basePose.theta);
+		basePose.y = basePose.y + time_elapsed * linear * sin(basePose.theta);
+		basePose.theta = basePose.theta + time_elapsed * angular;
 
-		odometry_msg.twist.twist.linear.x = baseVelocity.linear;
-		odometry_msg.twist.twist.angular.z = baseVelocity.angular;
-		//odometry_msg.twist.twist.angular.x = left_wheel.velocity;
-		//odometry_msg.twist.twist.angular.y = right_wheel.velocity;
+		odometry_msg.twist.twist.linear.x = linear;
+		odometry_msg.twist.twist.angular.z = angular;
+		odometry_msg.twist.twist.linear.y = 0; //baseVelocity.linear;
+		odometry_msg.twist.twist.linear.z = 0; randomNumber(-0.005, 0.005);
 
 
 		odometry_msg.pose.pose.position.x = basePose.x;
