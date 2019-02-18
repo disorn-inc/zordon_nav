@@ -2,8 +2,8 @@
 #include <nav_msgs/Odometry.h>
 #include <math.h>
 
-#define WHEEL_RADIUS 0.051
-#define WHEELS_DISTANCE 0.35
+#define WHEEL_RADIUS 0.0251
+#define WHEELS_DISTANCE 0.25
 
 const std::string PREFIX_MSG = "Mirela";
 
@@ -16,18 +16,18 @@ const std::string odometry_msg_frame_id = PREFIX_MSG + "_odom";
 const std::string cmd_vel_msg_name = PREFIX_MSG + "/cmd_vel";
 
 struct Velocity {
-	double linear = 0;
-	double angular = 0;
+	double linear;
+	double angular;
 };
 
 struct Pose {
-	double x = 0;
-	double y = 0;
-	double theta = 0;
+	double x;
+	double y;
+	double theta;
 };
 
-struct Velocity baseVelocity;
-struct Pose basePose;
+struct Velocity baseVelocity = {0,0};
+struct Pose basePose = {0,0,0};
 
 void commandVelocityCallback(const geometry_msgs::Twist& msg)
 {
@@ -41,10 +41,9 @@ int main(int argc, char **argv)
 	ros::NodeHandle n;
 	ros::Publisher odometry_msg_pub = n.advertise<nav_msgs::Odometry>("Mirela/wheels_odom", 1);
 	ros::Subscriber cmd_vel_sub = n.subscribe("Mirela/cmd_vel", 1000, &commandVelocityCallback);
-	ros::Rate loop_rate(10);
+	ros::Rate loop_rate(100);
 
 
-	double time_now = ros::Time::now().toSec();
 	double time_last = 0;	
 
 	while (ros::ok()) {
@@ -54,12 +53,13 @@ int main(int argc, char **argv)
 			basePose.y = basePose.y + time_elapsed * WHEEL_RADIUS * baseVelocity.linear * sin(basePose.theta);
 			basePose.theta = basePose.theta + time_elapsed * baseVelocity.angular * WHEEL_RADIUS;
 		*/
+		double time_now = ros::Time::now().toSec();
 		double time_elapsed = time_now - time_last;
 		time_last = time_now;
 		
-		basePose.x = basePose.x + time_elapsed * WHEEL_RADIUS * baseVelocity.linear * cos(basePose.theta);
-		basePose.y = basePose.y + time_elapsed * WHEEL_RADIUS * baseVelocity.linear * sin(basePose.theta);
-		basePose.theta = basePose.theta + time_elapsed * baseVelocity.angular * WHEEL_RADIUS;
+		basePose.x = basePose.x + time_elapsed * baseVelocity.linear * cos(basePose.theta);
+		basePose.y = basePose.y + time_elapsed * baseVelocity.linear * sin(basePose.theta);
+		basePose.theta = basePose.theta + time_elapsed * baseVelocity.angular  * 2;
 
 		odometry_msg.twist.twist.linear.x = baseVelocity.linear;
 		odometry_msg.twist.twist.angular.z = baseVelocity.angular;
