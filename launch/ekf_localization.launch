@@ -23,20 +23,20 @@
                                        false, false, false,   <!-- x,y,z velocities -->
                                        false, false, false,   <!-- roll, pitch , yaw velocity -->
                                        false, false, false ] <!-- x,y,z acceleration -->
-      </rosparam>
+        </rosparam>
         <rosparam param="odom0_config">[true, true, false, <!-- x,y,z -->
                                        false, false, true, <!-- roll, pitch, yaw -->
-                                       true, true, false,  <!-- x,y,z velocities -->
+                                       false, false, false,  <!-- x,y,z velocities -->
                                        false, false, true,  <!-- roll, pitch , yaw velocity -->
                                        false, false, false ] <!-- x,y,z acceleration -->
-       </rosparam>
+        </rosparam>
         <rosparam param="odom1_config">[true, true, false,    <!-- x,y,z -->
                                        false, false, true,    <!-- roll, pitch, yaw -->
                                        true, true, false,   <!-- x,y,z velocities -->
                                        false, false, true,   <!-- roll, pitch , yaw velocity -->
                                        false, false, false ]  <!-- x,y,z acceleration -->
-      </rosparam>
-    <param name="odom0_differential" value="false"/>
+        </rosparam>
+        <param name="odom0_differential" value="false"/>
 	<param name="odom1_differential" value="true"/>        
 	<param name="imu0_differential" value="true"/>
 	<param name="odom0_queue_size" value="20"/> 
