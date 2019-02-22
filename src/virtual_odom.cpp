@@ -45,7 +45,7 @@ float randomNumber(float Min, float Max)
 void commandVelocityCallback(const geometry_msgs::Twist& msg)
 {
 	baseVelocity.linear = msg.linear.x;
-//	baseVelocity.angular = msg.angular.z;	
+	baseVelocity.angular = msg.angular.z;	
 }
 
 void commandImuCallback(const sensor_msgs::Imu& msg) {
@@ -94,23 +94,23 @@ int main(int argc, char **argv)
 		double time_elapsed = time_now - time_last;
 		time_last = time_now;
 		double error_linear = randomNumber(-0.0005, 0.0005);
-		//double error_angular = randomNumber(-0.002, 0.002);	
+		double error_angular = randomNumber(-0.002, 0.002);	
 		double linear = 0;
-		//double angular = 0;
+		double angular = 0;
 		if(baseVelocity.linear != 0.0)
 			linear = baseVelocity.linear + error_linear;	
-	//	if(baseVelocity.angular != 0.0)
-	//		angular = baseVelocity.angular + error_angular;
+		if(baseVelocity.angular != 0.0)
+			angular = baseVelocity.angular + error_angular;
 		
 		basePose.x = basePose.x + time_elapsed * linear * cos(theta);
 		basePose.y = basePose.y + time_elapsed * linear * sin(theta);
-	//	basePose.theta = basePose.theta + time_elapsed * angular;
+		basePose.theta = basePose.theta + time_elapsed * angular;
 		
 
 		odometry_msg.twist.twist.linear.x = linear;
-		odometry_msg.twist.twist.angular.z = 0;
+		odometry_msg.twist.twist.angular.z = angular;
 		odometry_msg.twist.twist.linear.y = 0; //baseVelocity.linear;
-		odometry_msg.twist.twist.linear.z = baseVelocity.angular; //randomNumber(-0.005, 0.005);
+		odometry_msg.twist.twist.linear.z = 0; //randomNumber(-0.005, 0.005);
 
 
 		odometry_msg.pose.pose.position.x = basePose.x;
@@ -118,8 +118,8 @@ int main(int argc, char **argv)
 		odometry_msg.pose.pose.position.z = 0.0;//0.0;//pose.theta *180/3.1415;
 		odometry_msg.pose.pose.orientation.x = 0.0;//goal_vel.angular[2];
 		odometry_msg.pose.pose.orientation.y = 0.0;//dxl_wb.itemRead(DXL_ID, "Present_Position");
-		odometry_msg.pose.pose.orientation.z = imu.z;//sin(basePose.theta/2.0);
-		odometry_msg.pose.pose.orientation.w = imu.w;//cos(basePose.theta/2.0);
+		odometry_msg.pose.pose.orientation.z = sin(theta/2.0);
+		odometry_msg.pose.pose.orientation.w = cos(theta/2.0);
 		//odometry_msg.pose.covariance[0]  = 0.2; ///< x
 		//odometry_msg.pose.covariance[7]  = 0.2; ///< y
 		//odometry_msg.pose.covariance[35] = 0.4; ///< yaw
