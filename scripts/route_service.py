@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from jacto.srv import *
+from roboga.srv import *
 import rospy
 
 

@@ -1,11 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 <arg name="robot_name"/>
-<!-- ZED -->
-<include file="$(find roboga)/launch/zed_stereo.launch" >
-	<arg name="robot_name" value="$(arg robot_name)" />
-	<arg name="robotID" value="$(arg robot_name)" />
-</include>
+
 <!-- Virtual Odom -->
 <node pkg="roboga" type="virtual_odom_node" name="virtual_odom" />
 <!-- OpenCR -->
@@ -27,11 +23,19 @@
 </node>
 <!-- TF -->
 <!-- quartenion a partir de euler (0 0 -pi/2) [ 0, 0, -0.7071068, 0.7071068 ] --> 
-<node pkg="tf" type="static_transform_publisher" name="lidar_link_broadcaster" args="-0.035 0 0.33 0 0 0 1 $(arg robot_name)_base $(arg robot_name)_lidar 100">
+<node pkg="tf" type="static_transform_publisher" name="lidar_link_broadcaster" args="-0.155 0 0.33 0 0 0 1 $(arg robot_name)_base $(arg robot_name)_lidar 100">
 
 </node>
 <node pkg="tf" type="static_transform_publisher" name="zed_link_broadcaster" args="0.18 0 0.29 0 0 0 1 $(arg robot_name)_base $(arg robot_name)_zed 100" >
 </node>
-<!-- <node name="tf_broadcaster" pkg="jacto" type="tf_publisher.py" respawn="false" output="screen" >
+
+<node pkg="tf" type="static_transform_publisher" name="imu_link_broadcaster" args="0.02 0.05 0.055 0 0 -0.7071068 0.7071068 $(arg robot_name)_base $(arg robot_name)_imu 100">
+</node>
+<!-- <node name="tf_broadcaster" pkg="roboga" type="tf_publisher.py" respawn="false" output="screen" >
 	<param name="robot_name" type="string" value="$(arg robot_name)" />  --> 
+<!-- ZED -->
+<include file="$(find roboga)/launch/zed_teste.launch" >
+	<arg name="robot_name" value="$(arg robot_name)" />
+	<arg name="robotID" value="$(arg robot_name)" />
+</include>
 </launch>
