@@ -49,7 +49,7 @@ DWAPlannerROS:
 # Debugging
   publish_traj_pc : false
   publish_cost_grid_pc: false
-  global_frame_id: Mirela_odom
+  global_frame_id: Zordon_odom
 
 
 # Differential-drive robot configuration - necessary?

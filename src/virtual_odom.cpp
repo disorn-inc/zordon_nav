@@ -6,7 +6,7 @@
 #include <math.h>
 
 
-const std::string PREFIX_MSG = "Mirela";
+const std::string PREFIX_MSG = "Zordon";
 
 nav_msgs::Odometry odometry_msg;
 
@@ -61,13 +61,13 @@ int main(int argc, char **argv)
 
 	ros::init(argc, argv, "virtual_odom");
 	ros::NodeHandle n;
-	ros::Publisher odometry_msg_pub = n.advertise<nav_msgs::Odometry>("Mirela/wheels_odom", 1);
-	ros::Subscriber cmd_vel_sub = n.subscribe("Mirela/cmd_vel", 1000, &commandVelocityCallback);
-	ros::Subscriber cmd_imu_sub = n.subscribe("Mirela/imu", 1000, &commandImuCallback);
+	ros::Publisher odometry_msg_pub = n.advertise<nav_msgs::Odometry>("Zordon/wheels_odom", 1);
+	ros::Subscriber cmd_vel_sub = n.subscribe("Zordon/cmd_vel", 1000, &commandVelocityCallback);
+	ros::Subscriber cmd_imu_sub = n.subscribe("Zordon/imu", 1000, &commandImuCallback);
 	ros::Rate loop_rate(200);
 
-	odometry_msg.header.frame_id = "Mirela_odom";
-	odometry_msg.child_frame_id = "Mirela_base";
+	odometry_msg.header.frame_id = "Zordon_odom";
+	odometry_msg.child_frame_id = "Zordon_base";
 
 	double diagonal_value = 0.01;
 	for(int i = 0; i < 36; i++) {
@@ -79,17 +79,13 @@ int main(int argc, char **argv)
 	}
 
 
+
 	double time_last = 0;	
 	double last_theta = 0;
 	double theta;
 	while (ros::ok()) {
 		theta = atan2(2*(imu.w * imu.z + imu.x*imu.y), (1-2*(imu.y*imu.y+imu.z*imu.z)));	
 	
-		/*** Calculo da posicao e da orientacao
-			basePose.x = basePose.x + time_elapsed * WHEEL_RADIUS * baseVelocity.linear * cos(basePose.theta);
-			basePose.y = basePose.y + time_elapsed * WHEEL_RADIUS * baseVelocity.linear * sin(basePose.theta);
-			basePose.theta = basePose.theta + time_elapsed * baseVelocity.angular * WHEEL_RADIUS;
-		*/
 		double time_now = ros::Time::now().toSec();
 		double time_elapsed = time_now - time_last;
 		time_last = time_now;
@@ -105,8 +101,14 @@ int main(int argc, char **argv)
 		basePose.x = basePose.x + time_elapsed * linear * cos(theta);
 		basePose.y = basePose.y + time_elapsed * linear * sin(theta);
 		basePose.theta = basePose.theta + time_elapsed * angular;
-		
 
+
+
+		/*** Calculo da posicao e da orientacao 
+			basePose.x = basePose.x + time_elapsed *  linear * cos(basePose.theta);
+			basePose.y = basePose.y + time_elapsed *  linear * sin(basePose.theta);
+			basePose.theta = basePose.theta + time_elapsed * angular;
+		*/
 		odometry_msg.twist.twist.linear.x = linear;
 		odometry_msg.twist.twist.angular.z = angular;
 		odometry_msg.twist.twist.linear.y = 0; //baseVelocity.linear;
@@ -118,8 +120,8 @@ int main(int argc, char **argv)
 		odometry_msg.pose.pose.position.z = 0.0;//0.0;//pose.theta *180/3.1415;
 		odometry_msg.pose.pose.orientation.x = 0.0;//goal_vel.angular[2];
 		odometry_msg.pose.pose.orientation.y = 0.0;//dxl_wb.itemRead(DXL_ID, "Present_Position");
-		odometry_msg.pose.pose.orientation.z = sin(theta/2.0);
-		odometry_msg.pose.pose.orientation.w = cos(theta/2.0);
+		odometry_msg.pose.pose.orientation.z =  imu.z;//*/sin(basePose.theta/2.0);
+		odometry_msg.pose.pose.orientation.w = imu.w;//*/cos(basePose.theta/2.0);
 		//odometry_msg.pose.covariance[0]  = 0.2; ///< x
 		//odometry_msg.pose.covariance[7]  = 0.2; ///< y
 		//odometry_msg.pose.covariance[35] = 0.4; ///< yaw

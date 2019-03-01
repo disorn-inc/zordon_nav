@@ -34,7 +34,7 @@ obstacle_layer:
  combination_method: 1
 
  observation_sources: laser_scan_sensor
- laser_scan_sensor: {data_type: LaserScan, topic: Mirela/Lidar2D/LidarScan, marking: true, clearing: true}
+ laser_scan_sensor: {data_type: LaserScan, topic: Zordon/Lidar2D/LidarScan, marking: true, clearing: true}
 
 static_layer:
   enabled:              true

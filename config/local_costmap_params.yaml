@@ -1,6 +1,6 @@
 local_costmap:
-  global_frame: /Mirela_odom
-  robot_base_frame: /Mirela_base
+  global_frame: /Zordon_odom
+  robot_base_frame: /Zordon_base
   update_frequency: 10.0
   publish_frequency: 10.0
   static_map: false

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch>
-<arg name="acml" default="true"/>
-<arg name="robot_ID" default="Mirela"/>
-<arg name = "map" default="my_map"/>
+<arg name="amcl" default="true"/>
+<arg name="robot_ID" default="Zordon"/>
+<arg name = "map" default="nepe2019"/>
 <!-- **********************************************************************-->
 <!-- *************************** HARDWARE STACK ***************************-->
 <include file="$(find roboga)/launch/hardware.launch">
@@ -16,18 +16,13 @@
 <!-- ********************************************************************** -->
 <!-- ************************* SLAM ou MAP SERVER ************************* -->
 <!-- -->
-<group if="$(arg acml)">
-    <include file="$(find roboga)/launch/amcl.launch">
-        <arg name="robot_name" value="$(arg robot_ID)"/>
+<include if="$(arg amcl)" file="$(find roboga)/launch/amcl.launch">
+	<arg name="robot_name" value="$(arg robot_ID)"/>
 	<arg name = "map_name" value = "$(arg map)"/>
-    </include>
-</group>
-
-<group unless="$(arg acml)">
-    <include file="$(find roboga)/launch/gmapping.launch">
-        <arg name="robot_name" value="$(arg robot_ID)"/>
-    </include>
-</group>
+</include>
+<include unless="$(arg amcl)" file="$(find roboga)/launch/gmapping.launch">
+	<arg name="robot_name" value="$(arg robot_ID)"/>
+</include>
 <!-- ********************************************************************** -->
 <!-- ************************** NAVIGATION STACK ************************** -->
 <include file="$(find roboga)/launch/move_base.launch">

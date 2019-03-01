@@ -1,6 +1,6 @@
 TebLocalPlannerROS:
 
- odom_topic: Mirela/odom_filtered
+ odom_topic: Zordon/odom_filtered
     
  # Trajectory
   
@@ -14,7 +14,7 @@ TebLocalPlannerROS:
     
  # Robot
          
- max_vel_x: 0.25 #0.2
+ max_vel_x: 0.15 #0.2
  max_vel_x_backwards: 0.1 #0.2
  max_vel_y: 0.0
  max_vel_theta: 0.9

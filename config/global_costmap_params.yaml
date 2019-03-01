@@ -1,6 +1,6 @@
 #global_costmap:
 #  global_frame: map
-#  robot_base_frame: Jacto_01_base
+#  robot_base_frame: Zordon_base
 #  update_frequency: 5.0
 #  static_map: true
 ##  width: 5
@@ -12,7 +12,7 @@
 #    - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}
 global_costmap:
   global_frame: /map
-  robot_base_frame: /Mirela_base
+  robot_base_frame: /Zordon_base
   update_frequency: 3.0 # mudei pra 3 mas era 5
   publish_frequency: 5.0
   static_map: true
