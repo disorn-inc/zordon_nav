@@ -23,7 +23,7 @@
 </node>
 <!-- TF -->
 <!-- quartenion a partir de euler (0 0 -pi/2) [ 0, 0, -0.7071068, 0.7071068 ] --> 
-<node pkg="tf" type="static_transform_publisher" name="lidar_link_broadcaster" args="-0.155 0 0.33 0 0 0 1 $(arg robot_name)_base $(arg robot_name)_lidar 100">
+<node pkg="tf" type="static_transform_publisher" name="lidar_link_broadcaster" args="0 0 0.33 0 0 0 1 $(arg robot_name)_base $(arg robot_name)_lidar 100">
 
 </node>
 <node pkg="tf" type="static_transform_publisher" name="zed_link_broadcaster" args="0.18 0 0.29 0 0 0 1 $(arg robot_name)_base $(arg robot_name)_zed 100" >

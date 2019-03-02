@@ -19,7 +19,7 @@
     	<param name="world_frame" value= "$(arg robot_name)_odom"/>
     	<param name="map_frame" value= "map"/>
         <rosparam param="imu0_config"> [false, false, false,   <!-- x,y,z -->
-                                       true, true, true,      <!-- roll, pitch, yaw -->
+                                       true, true, false,      <!-- roll, pitch, yaw -->
                                        false, false, false,   <!-- x,y,z velocities -->
                                        true, true, true,   <!-- roll, pitch , yaw velocity -->
                                        true, true, true ] <!-- x,y,z acceleration -->
