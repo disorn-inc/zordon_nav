@@ -23,14 +23,18 @@
 </node>
 <!-- TF -->
 <!-- quartenion a partir de euler (0 0 -pi/2) [ 0, 0, -0.7071068, 0.7071068 ] --> 
-<node pkg="tf" type="static_transform_publisher" name="lidar_link_broadcaster" args="0 0 0.33 0 0 0 1 $(arg robot_name)_base $(arg robot_name)_lidar 100">
+<node pkg="tf" type="static_transform_publisher" name="lidar_link_broadcaster" args="0 0 0.33 0 0 0.7071068 0.7071068 $(arg robot_name)_base $(arg robot_name)_lidar 100">
 
 </node>
-<node pkg="tf" type="static_transform_publisher" name="zed_link_broadcaster" args="0.18 0 0.29 0 0 0 1 $(arg robot_name)_base $(arg robot_name)_zed 100" >
+<node pkg="tf" type="static_transform_publisher" name="zed_link_broadcaster" args="-0.12 0 1.28 0 0 0 1 $(arg robot_name)_base $(arg robot_name)_zed 100" >
 </node>
 
-<node pkg="tf" type="static_transform_publisher" name="imu_link_broadcaster" args="0.02 0.05 0.055 0 0 0 -1 $(arg robot_name)_base $(arg robot_name)_imu 100">
+<!--<node pkg="tf" type="static_transform_publisher" name="orb_link_broadcaster" args="0.12 0 0.29 -0.5 0.5 -0.5 0.5 $(arg robot_name)_base camera_link 100" >
+</node>-->
+
+<node pkg="tf" type="static_transform_publisher" name="imu_link_broadcaster" args="-0.02 -0.05 0.055 0 0 0 1 $(arg robot_name)_base $(arg robot_name)_imu 100">
 </node>
+
 <!-- <node name="tf_broadcaster" pkg="roboga" type="tf_publisher.py" respawn="false" output="screen" >
 	<param name="robot_name" type="string" value="$(arg robot_name)" />  --> 
 <!-- ZED -->

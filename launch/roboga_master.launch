@@ -2,7 +2,7 @@
 <launch>
 <arg name="amcl" default="true"/>
 <arg name="robot_ID" default="Zordon"/>
-<arg name = "map" default="nepe2019"/>
+<arg name = "map" default="nepe2019_v2"/>
 <!-- **********************************************************************-->
 <!-- *************************** HARDWARE STACK ***************************-->
 <include file="$(find roboga)/launch/hardware.launch">
@@ -33,8 +33,7 @@
 <!---->
 <!--<include file="$(find roboga)/launch/web_interface.launch" > 
    <arg name="port_n" value="9090"/>
-</include>
--->
+</include>-->
 <!-- ********************************************************************** -->
 <!-- ********************************************************************** -->
 
