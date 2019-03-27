@@ -15,11 +15,11 @@ global_costmap:
   robot_base_frame: /Zordon_base
   update_frequency: 3.0 # mudei pra 3 mas era 5
   publish_frequency: 5.0
-  static_map: true
+  static_map: false # true
   width: 3
   height: 3
   resolution: 0.4
   plugins:
     - {name: static_layer,            type: "costmap_2d::StaticLayer"}
-#    - {name: obstacle_layer,          type: "costmap_2d::VoxelLayer"}
-    - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}
+    - {name: obstacle_layer,          type: "costmap_2d::ObstacleLayer"}
+#    - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}
