@@ -1,13 +1,13 @@
 local_costmap:
   global_frame: /Zordon_odom
   robot_base_frame: /Zordon_base
-  update_frequency: 10.0
-  publish_frequency: 10.0
+  update_frequency: 8.0
+  publish_frequency: 5.0
   static_map: false
   rolling_window: true
   width: 4.0
   height: 4.0
-  resolution: 0.1
+  resolution: 0.05
 
   plugins:
    - {name: static_layer,        type: "costmap_2d::StaticLayer"}

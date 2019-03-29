@@ -87,15 +87,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         <param name="resolution"            value="$(arg resolution)" />
         <param name="verbose"               value="$(arg verbose)" />
-        <param name="mat_resize_factor"     value="1.0" />
+        <param name="mat_resize_factor"     value="0.4" />
 	<param name="quality"               value="1" />
         <param name="sensing_mode"          value="0" />
         <param name="frame_rate"            value="$(arg frame_rate)" />
         <param name="odometry_db"           value="" />
-        <param name="openni_depth_mode"     value="0" />
+        <param name="openni_depth_mode"     value="1" />
         <param name="gpu_id"                value="$(arg gpu_id)" />
         <param name="confidence"            value="100" />
-        <param name="max_depth"             value="10.0" />
+        <param name="max_depth"             value="4.0" />
         <param name="gain"                  value="100" />
         <param name="exposure"              value="100" />
         <param name="auto_exposure"         value="true" />

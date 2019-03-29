@@ -16,8 +16,8 @@ global_costmap:
   update_frequency: 3.0 # mudei pra 3 mas era 5
   publish_frequency: 5.0
   static_map: false # true
-  width: 3
-  height: 3
+  width: 8
+  height: 8
   resolution: 0.4
   plugins:
     - {name: static_layer,            type: "costmap_2d::StaticLayer"}

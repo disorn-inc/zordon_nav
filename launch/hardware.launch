@@ -38,8 +38,8 @@
 <!-- <node name="tf_broadcaster" pkg="roboga" type="tf_publisher.py" respawn="false" output="screen" >
 	<param name="robot_name" type="string" value="$(arg robot_name)" />  --> 
 <!-- ZED -->
-<!--<include file="$(find roboga)/launch/zed_teste.launch" >
+<include file="$(find roboga)/launch/zed_teste.launch" >
 	<arg name="robot_name" value="$(arg robot_name)" />
 	<arg name="robotID" value="$(arg robot_name)" />
-</include>-->
+</include>
 </launch>
