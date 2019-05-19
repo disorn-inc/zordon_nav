@@ -115,9 +115,9 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES sim_comms
-#  CATKIN_DEPENDS roslib rospy sensor_msgs std_msgs
+  CATKIN_DEPENDS roslib rospy sensor_msgs std_msgs
   CATKIN_DEPENDS std_msgs sensor_msgs message_runtime
-#  DEPENDS system_lib
+  DEPENDS system_lib
 )
 
 ###########
