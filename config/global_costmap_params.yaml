@@ -11,8 +11,8 @@
 #    - {name: obstacle_layer,          type: "costmap_2d::VoxelLayer"}
 #    - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}
 global_costmap:
-  global_frame: /map
-  robot_base_frame: /Zordon_base
+  global_frame: map
+  robot_base_frame: Zordon_base
   update_frequency: 3.0 # mudei pra 3 mas era 5
   publish_frequency: 5.0
   static_map: false # true

@@ -1,6 +1,6 @@
 TebLocalPlannerROS:
 
- odom_topic: Zordon/odom_filtered
+ odom_topic: /Zordon/odom_filtered
     
  # Trajectory
   

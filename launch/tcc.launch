@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+	<param name="use_sim_time" value="true"/>
+	<arg name="bag_name" />
+	<arg name="robot_name" default="Zordon" />
+
+	<!--node whose tf needs to be remapped-->
+	<node pkg="rosbag" type="play" name="player" args="/home/nvidia/$(arg bag_name).bag --clock">
+		<remap from="tf" to="tf_old" />
+		<param name="use_sim_time" value="true" />
+	</node>
+	<include file="$(find roboga)/launch/gmapping.launch">
+		<arg name="robot_name" value="$(arg robot_name)"/>
+	</include>
+	<node pkg="tf" type="tf_remap" name="tf_remapper" output="screen" />
+
+</launch>

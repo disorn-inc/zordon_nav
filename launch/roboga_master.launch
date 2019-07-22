@@ -13,16 +13,18 @@
 <include file="$(find roboga)/launch/ekf_localization.launch">
     <arg name="robot_name" value="$(arg robot_ID)"/>
 </include>
+<!--<include file="$(find roboga)/launch/rtabmap_roboga.launch" />-->
 <!-- ********************************************************************** -->
 <!-- ************************* SLAM ou MAP SERVER ************************* -->
-<!-- -->
+<!-- 
 <include if="$(arg amcl)" file="$(find roboga)/launch/amcl.launch">
 	<arg name="robot_name" value="$(arg robot_ID)"/>
 	<arg name = "map_name" value = "$(arg map)"/>
 </include>
 <include unless="$(arg amcl)" file="$(find roboga)/launch/gmapping.launch">
 	<arg name="robot_name" value="$(arg robot_ID)"/>
-</include>
+	
+</include>-->
 <!-- ********************************************************************** -->
 <!-- ************************** NAVIGATION STACK ************************** -->
 <include file="$(find roboga)/launch/move_base.launch">

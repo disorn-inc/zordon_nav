@@ -1,0 +1,32 @@
+<launch>
+
+<node pkg="taraxl_ros_package" name="taraxl_ros_package" type="taraxl_ros_package" ns="taraxl" output="screen" />
+
+<group ns="taraxl/left/image_rect" >
+  <rosparam param="disable_pub_plugins">
+    - 'image_transport/compressedDepth'
+    - 'image_transport/theora'
+    - 'image_transport/compressed'
+  </rosparam>
+</group>
+
+<group ns="taraxl/right/image_rect" >
+  <rosparam param="disable_pub_plugins">
+    - 'image_transport/compressedDepth'
+    - 'image_transport/theora'
+    - 'image_transport/compressed'
+  </rosparam>
+</group>
+
+<group ns="taraxl/depth/image" >
+  <rosparam param="disable_pub_plugins">
+    - 'image_transport/compressedDepth'
+    - 'image_transport/theora'
+    - 'image_transport/compressed'
+  </rosparam>
+</group>
+
+<node name="camera_transform" pkg="tf" type="static_transform_publisher" args="-0.12 0 0.585 -0.5 0.5 -0.5 0.5 /Zordon_base /taraxl_left 100" />
+
+
+</launch>

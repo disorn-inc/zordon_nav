@@ -1,6 +1,6 @@
 local_costmap:
-  global_frame: /Zordon_odom
-  robot_base_frame: /Zordon_base
+  global_frame: Zordon_odom
+  robot_base_frame: Zordon_base
   update_frequency: 8.0
   publish_frequency: 5.0
   static_map: false
