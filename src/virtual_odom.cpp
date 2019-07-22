@@ -16,6 +16,8 @@ const std::string odometry_msg_frame_id = PREFIX_MSG + "_odom";
 
 const std::string cmd_vel_msg_name = PREFIX_MSG + "/cmd_vel";
 
+
+
 struct Velocity {
 	double linear;
 	double angular;
@@ -38,10 +40,12 @@ struct Velocity baseVelocity = {0,0};
 struct Pose basePose = {0,0,0};
 struct Imu imu = {0,0,0,0};
 
+
 float randomNumber(float Min, float Max)
 {
     return ((float(rand()) / float(RAND_MAX)) * (Max - Min)) + Min;
 }
+
 void commandVelocityCallback(const geometry_msgs::Twist& msg)
 {
 	baseVelocity.linear = msg.linear.x;
@@ -68,7 +72,7 @@ int main(int argc, char **argv)
 
 	odometry_msg.header.frame_id = "Zordon_odom";
 	odometry_msg.child_frame_id = "Zordon_base";
-
+	
 	double diagonal_value = 0.01;
 	for(int i = 0; i < 36; i++) {
 		if(i == 0 || i == 7 || i == 14 ||
@@ -102,29 +106,20 @@ int main(int argc, char **argv)
 		basePose.y = basePose.y + time_elapsed * linear * sin(theta);
 		basePose.theta = basePose.theta + time_elapsed * angular;
 
-
-
-		/*** Calculo da posicao e da orientacao 
-			basePose.x = basePose.x + time_elapsed *  linear * cos(basePose.theta);
-			basePose.y = basePose.y + time_elapsed *  linear * sin(basePose.theta);
-			basePose.theta = basePose.theta + time_elapsed * angular;
-		*/
 		odometry_msg.twist.twist.linear.x = linear;
 		odometry_msg.twist.twist.angular.z = angular;
 		odometry_msg.twist.twist.linear.y = 0; //baseVelocity.linear;
 		odometry_msg.twist.twist.linear.z = 0; //randomNumber(-0.005, 0.005);
 
-
 		odometry_msg.pose.pose.position.x = basePose.x;
 		odometry_msg.pose.pose.position.y = basePose.y;
 		odometry_msg.pose.pose.position.z = 0.0;//0.0;//pose.theta *180/3.1415;
+
 		odometry_msg.pose.pose.orientation.x = 0.0;//goal_vel.angular[2];
 		odometry_msg.pose.pose.orientation.y = 0.0;//dxl_wb.itemRead(DXL_ID, "Present_Position");
 		odometry_msg.pose.pose.orientation.z =  imu.z;//*/sin(basePose.theta/2.0);
 		odometry_msg.pose.pose.orientation.w = imu.w;//*/cos(basePose.theta/2.0);
-		//odometry_msg.pose.covariance[0]  = 0.2; ///< x
-		//odometry_msg.pose.covariance[7]  = 0.2; ///< y
-		//odometry_msg.pose.covariance[35] = 0.4; ///< yaw
+		
 		odometry_msg.header.stamp = ros::Time::now();
 
 		odometry_msg_pub.publish(odometry_msg);
