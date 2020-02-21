@@ -14,7 +14,7 @@ if __name__ == '__main__':
     rate = rospy.Rate(10.0)
     while not rospy.is_shutdown():
         try:
-            trans = tfBuffer.lookup_transform("map", "Mirela_base", rospy.Time())
+            trans = tfBuffer.lookup_transform("map", "Zordon_base", rospy.Time())
 	    print(trans.transform.translation.x,trans.transform.translation.y,trans.transform.translation.z)
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             rate.sleep()

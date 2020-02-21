@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
   <arg name="robot_name"/>
-<node pkg="gmapping" type="slam_gmapping" name="roboga_slam_gmapping" >
+<node pkg="gmapping" type="slam_gmapping" name="zordon_nav_slam_gmapping" >
       <remap from="scan" to="$(arg robot_name)/Lidar2D/LidarScan"/>
       <param name="base_frame" type="string" value="$(arg robot_name)_base" />
       <param name="odom_frame" type="string" value="$(arg robot_name)_odom" />

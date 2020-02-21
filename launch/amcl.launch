@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
   <arg name ="map_name"/>
-  <arg name="map_file" default="$(find roboga)/map/$(arg map_name).yaml"/>
+  <arg name="map_file" default="$(find zordon_nav)/map/$(arg map_name).yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
   <arg name="robot_name"/>
 <!--

@@ -1,42 +1,61 @@
 <?xml version="1.0"?>
 <launch>
 <arg name="robot_name"/>
+<arg name="manager_visual" default="visual_manager"/>
+
+<node pkg="nodelet" type="nodelet" name="$(arg manager_visual)" args="manager" output="screen">
+</node>
 
 <!-- Virtual Odom -->
-<node pkg="roboga" type="virtual_odom_node" name="virtual_odom" />
+<node pkg="zordon_nav" type="virtual_odom_node" name="virtual_odom" />
 <!-- OpenCR -->
 <node pkg="rosserial_python" type="serial_node.py" args="/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A104D4ES-if00-port0" name="serial_node" respawn="true"/>
 <!--<node pkg="rosserial_python" type="serial_node.py" args="/dev/serial/by-id/usb-ROBOTIS_OpenCR_Virtual_ComPort_in_FS_Mode_FFFFFFFEFFFF-if00" name="serial_opencr_node" respawn="true"/>-->
-<include file="$(find roboga)/launch/bno055.launch"></include>
+<include file="$(find zordon_nav)/launch/bno055.launch"></include>
 <!-- LIDAR -->
 <!--<node pkg="hls_lfcd_lds_driver" type="hlds_laser_publisher" name="Lidar2D_driver">
 <param name="port" value="/dev/ttyUSB0"/>
 <param name="frame_id" value="$(arg robot_name)_lidar"/>
 <remap from="scan" to="$(arg robot_name)/Lidar2D/LidarScan"/>
-</node>-->
-<include file="$(find roboga)/launch/taraxl.launch" />
-<!--<node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
+</node>
+<include file="$(find roboga)/launch/taraxl.launch" />-->
+<node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
     <param name="serial_port"         type="string" value="/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0"/>
     <param name="serial_baudrate"     type="int"    value="115200"/>
     <param name="frame_id"            type="string" value="$(arg robot_name)_lidar"/>
     <param name="inverted"            type="bool"   value="false"/>
     <param name="angle_compensate"    type="bool"   value="true"/>
     <remap from="scan" to="$(arg robot_name)/Lidar2D/LidarScan"/>
-</node>-->
+</node>
 <!-- TF -->
 <!--<node pkg="tf" type="static_transform_publisher" name="base_link_broadcaster" args="0 0 0 0 0 0 1 $(arg robot_name)_odom $(arg robot_name)_base 100">
-
 </node>-->
+
 <!-- quartenion a partir de euler (0 0 -pi/2) [ 0, 0, -0.7071068, 0.7071068 ] --> 
-<node pkg="tf" type="static_transform_publisher" name="lidar_link_broadcaster" args="0 0 0.33 0 0 0 1 $(arg robot_name)_base $(arg robot_name)_lidar 100">
+<node pkg="tf" type="static_transform_publisher" name="lidar_link_broadcaster" args="0 0 0.28 0 0 0 1 $(arg robot_name)_base $(arg robot_name)_lidar 100">
+</node>
 
+<!-- 
+<node pkg="tf" type="static_transform_publisher" name="zed_link_broadcaster" args="-0.12 0 1.28 0 0.354 0 0.935 $(arg robot_name)_base $(arg robot_name)_zed 100" >
+</node> -->
+<!-- <node pkg="tf" type="static_transform_publisher" name="kinect_depth_link_broadcaster" args="0 0.01 1.33 0.5 -0.5 0.5 -0.5 $(arg robot_name)_base camera_depth_optical_frame 100" />
+<node pkg="tf" type="static_transform_publisher" name="kinect_rgb_link_broadcaster" args="0 -0.015 1.33 0.5 -0.5 0.5 -0.5 $(arg robot_name)_base camera_rgb_optical_frame 100" /> -->
+
+
+<node pkg="tf" type="static_transform_publisher" name="kinect_depth_base_broadcaster" args="0 0 0 0.5 -0.5 0.5 -0.5 camera_depth_optical_base camera_depth_optical_frame 100" >
 </node>
-<!--<node pkg="tf" type="static_transform_publisher" name="zed_link_broadcaster" args="-0.12 0 1.28 0 0.354 0 0.935 $(arg robot_name)_base $(arg robot_name)_zed 100" >
-</node>-->
-<node pkg="tf" type="static_transform_publisher" name="kinect_depth_link_broadcaster" args="-0.12 0 0.585 -0.5 0.5 -0.5 0.5 Zordon_base camera_depth_optical_frame 100" >
+<node pkg="tf" type="static_transform_publisher" name="kinect_depth_link_broadcaster" args="0 0.01 1.33 0 0.17 0 0.98 $(arg robot_name)_base camera_depth_optical_base 100" >
 </node>
-<node pkg="tf" type="static_transform_publisher" name="kinect_rgb_link_broadcaster" args="-0.12 0 0.585 -0.5 0.5 -0.5 0.5 Zordon_base camera_rgb_optical_frame 100" >
+<node pkg="tf" type="static_transform_publisher" name="kinect_rgb_base_broadcaster" args="0 0 0 0.5 -0.5 0.5 -0.5 camera_rgb_optical_base camera_rgb_optical_frame 100" >
 </node>
+<node pkg="tf" type="static_transform_publisher" name="kinect_rgb_link_broadcaster" args="0 -0.015 1.33 0 0.17 0 0.98 $(arg robot_name)_base camera_rgb_optical_base 100" >
+</node>
+
+
+<include file="$(find zordon_nav)/launch/rgbd_stack.launch">
+    <arg name="manager" value="$(arg manager_visual)" />
+    <arg name="robot_name" value="$(arg robot_name)" />
+</include>
 
 
 <!--<node pkg="tf" type="static_transform_publisher" name="orb_link_broadcaster" args="0.12 0 0.29 -0.5 0.5 -0.5 0.5 $(arg robot_name)_base camera_link 100" >
@@ -48,7 +67,7 @@
 <!-- <node name="tf_broadcaster" pkg="roboga" type="tf_publisher.py" respawn="false" output="screen" >
 	<param name="robot_name" type="string" value="$(arg robot_name)" />  --> 
 <!-- ZED -->
-<!--<include file="$(find roboga)/launch/zed_teste.launch" >
+<!--<include file="$(find zordon_nav)/launch/zed_stereo.launch" >
 	<arg name="robot_name" value="$(arg robot_name)" />
 	<arg name="robotID" value="$(arg robot_name)" />
 </include>-->

@@ -1,0 +1,5 @@
+<library path="lib/libzordon_nav">
+	<class name="zordon_nav/BaseControllerConverterNodelet" type="zordon_nav::BaseControllerConverterNodelet" base_class_type="nodelet::Nodelet">
+		<description>Nodelet to perform conversions from compacted type message to full type message of tipical base controller</description>
+	</class>
+</library>

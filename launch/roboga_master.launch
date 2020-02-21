@@ -2,38 +2,41 @@
 <launch>
 <arg name="amcl" default="true"/>
 <arg name="robot_ID" default="Zordon"/>
-<arg name = "map" default="nepe2019_v2"/>
+<arg name = "map" default="lars"/>
 <!-- **********************************************************************-->
 <!-- *************************** HARDWARE STACK ***************************-->
-<include file="$(find roboga)/launch/hardware.launch">
+<include file="$(find zordon_nav)/launch/hardware.launch">
     <arg name="robot_name" value="$(arg robot_ID)"/>
 </include>
 <!-- ********************************************************************** -->
 <!--  ************************ LOCALIZATION STACK  ************************-->
-<include file="$(find roboga)/launch/ekf_localization.launch">
+<include unless="$(arg amcl)" file="$(find zordon_nav)/launch/ekf.launch">
     <arg name="robot_name" value="$(arg robot_ID)"/>
 </include>
-<!--<include file="$(find roboga)/launch/rtabmap_roboga.launch" />-->
+<!-- <include file="$(find zordon_nav)/launch/rtabmap_roboga.launch" >
+    <arg name="robot_name"          value="$(arg robot_ID)"/>
+    <arg name="camera"              value="camera"/>
+    <arg name="approximate_sync"    value="true"/>
+    <arg name="manager"             value="visual_manager"/>
+</include> -->
 <!-- ********************************************************************** -->
 <!-- ************************* SLAM ou MAP SERVER ************************* -->
-<!-- 
-<include if="$(arg amcl)" file="$(find roboga)/launch/amcl.launch">
+<include if="$(arg amcl)" file="$(find zordon_nav)/launch/amcl.launch">
 	<arg name="robot_name" value="$(arg robot_ID)"/>
 	<arg name = "map_name" value = "$(arg map)"/>
 </include>
-<include unless="$(arg amcl)" file="$(find roboga)/launch/gmapping.launch">
+<include unless="$(arg amcl)" file="$(find zordon_nav)/launch/gmapping.launch">
 	<arg name="robot_name" value="$(arg robot_ID)"/>
-	
-</include>-->
+</include>
 <!-- ********************************************************************** -->
 <!-- ************************** NAVIGATION STACK ************************** -->
-<include file="$(find roboga)/launch/move_base.launch">
+<include file="$(find zordon_nav)/launch/move_base.launch">
     <arg name="robot_name" value="$(arg robot_ID)"/>
 </include>
 <!-- ********************************************************************** -->
 <!-- ************************ INTERFACE WEB STACK ************************* -->
 <!---->
-<!--<include file="$(find roboga)/launch/web_interface.launch" > 
+<!--<include file="$(find zordon_nav)/launch/web_interface.launch" > 
    <arg name="port_n" value="9090"/>
 </include>-->
 <!-- ********************************************************************** -->

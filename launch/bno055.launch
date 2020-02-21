@@ -1,6 +1,7 @@
+<?xml version="1.0"?>
 <launch>
   <node name="bno055_node" pkg="bno055" type="bno055_node">
 	<remap from="imu" to="/Zordon/imu" />
   </node>
-  <node pkg="tf" type="static_transform_publisher" name="imu_link_broadcaster" args="0.15 0.20 0.20 0 0 -0.707 0.707 Zordon_base Zordon_imu 100" />
+  <node pkg="tf" type="static_transform_publisher" name="imu_link_broadcaster" args="0.065 -0.12 0.24 0 0 -0.707 0.707 Zordon_base Zordon_imu 100" />
 </launch>

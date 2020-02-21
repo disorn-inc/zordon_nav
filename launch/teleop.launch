@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="joy" type="joy_node" name="joy_node" output="screen">
+  </node>
+ <node pkg="teleop_twist_joy" type="teleop_node" name="teleop_node" output="screen" args="cmd_vel:=/Zordon/cmd_vel">
+ 	<param name="scale_linear" type="double" value="0.2" />
+ </node>
+</launch>
+

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import roslib
-roslib.load_manifest('roboga')
+roslib.load_manifest('zordon_nav')
 import rospy
 import tf_conversions
 from nav_msgs.msg import Odometry
@@ -21,14 +21,20 @@ if __name__ == '__main__':
 	rospy.init_node('odom_broadcaster')
 	robot = rospy.get_param('~robot_name')
 	child_frame_id = '%s_base' % robot
-	pub = rospy.Publisher('/%s/odom_wheels' % robot, Odometry, queue_size=1)
+	pub = rospy.Publisher('/%s/wheels_odom' % robot, Odometry, queue_size=1)
 	rate = rospy.Rate(100) # 30hz
     	while not rospy.is_shutdown():
 		odom = Odometry()
+                odom.pose.covariance[0] = 0.01;
+                odom.pose.covariance[7] = 0.01;
+                odom.pose.covariance[14] = 0.01;
+                odom.pose.covariance[21] = 0.01;
+                odom.pose.covariance[28] = 0.01;
+                odom.pose.covariance[35] = 0.01;
 		odom.header = get_header(robot)
 		odom.child_frame_id = child_frame_id
-		odom.pose.pose.position.x = 1
-		odom.pose.pose.position.y = 1
+		odom.pose.pose.position.x = 0
+		odom.pose.pose.position.y = 0
 		odom.pose.pose.position.z = 0
 		q = tf_conversions.transformations.quaternion_from_euler(0, 0, 0)
 		odom.pose.pose.orientation.x = q[0]

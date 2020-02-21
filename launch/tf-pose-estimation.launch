@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+	<include file="$(find zordon_nav)/launch/kinect.launch" />
+	<node name="pose_estimator" pkg="tfpose_ros" type="broadcaster_ros.py" output="screen" required="true">
+		<env name="CUDA_VISIBLE_DEVICES" value="0" />
+		<param name="camera" value="/camera/rgb/image_raw" />
+		<param name="model" value="mobilenet_thin" />
+		<param name="resolution" value="432x368" />
+	</node>
+	<!--	<node name="humanpose" pkg="tfpose_ros" type="visualization.py" output="screen" required="true">
+		<param name="camera" value="/camera/rgb/image_raw" />
+		<param name="pose" value="/pose_estimator/pose" />
+	</node>-->
+</launch>

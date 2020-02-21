@@ -9,7 +9,7 @@
 		<remap from="tf" to="tf_old" />
 		<param name="use_sim_time" value="true" />
 	</node>
-	<include file="$(find roboga)/launch/gmapping.launch">
+	<include file="$(find zordon_nav)/launch/gmapping.launch">
 		<arg name="robot_name" value="$(arg robot_name)"/>
 	</include>
 	<node pkg="tf" type="tf_remap" name="tf_remapper" output="screen" />

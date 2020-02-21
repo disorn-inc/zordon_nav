@@ -1,90 +1,94 @@
-	<?xml version="1.0"?>
- <launch>
- <arg name="robot_name" />
- <!-- Jacto ID -->
-    <arg name="robotID"               default="$(arg robot_name)" /> <!-- ID do robo -->
-    <arg name="camera_model"          default="0" /> <!-- 0=ZED, 1=ZEDM-->
-    <arg name="svo_file"              default="" /><!-- <arg name="svo_file" default="path/to/svo/file.svo"> -->
-    <arg name="zed_id"                default="0" />
-    <!-- If a ZED SN is given, zed_id is ignored and the wrapper will specifically look for the ZED with the corresponding serial number -->
-    <arg name="serial_number"                default="0" />
+<?xml version="1.0"?>
+<launch>
+	<arg name="robot_name" />
+	<!-- Jacto ID -->
+	<arg name="robotID"               default="$(arg robot_name)" /> <!-- ID do robo -->
+	<arg name="camera_model"          default="0" /> <!-- 0=ZED, 1=ZEDM-->
+	<arg name="svo_file"              default="" /><!-- <arg name="svo_file" default="path/to/svo/file.svo"> -->
+		<arg name="zed_id"                default="0" />
+		<!-- If a ZED SN is given, zed_id is ignored and the wrapper will specifically look for the ZED with the corresponding serial number -->
+		<arg name="serial_number"                default="0" />
 
-    <!-- GPU ID-->
-    <arg name="gpu_id"                default="-1" />
-    <!-- Definition coordinate frames -->
-    <arg name="publish_tf"            default="false" />
-    <arg name="odometry_frame"        default="$(arg robotID)_odom" />
-    <arg name="base_frame"            default="$(arg robotID)_base" />
-    <arg name="camera_frame"          default="$(arg robotID)_zed" />
-    <arg name="depth_frame"           default="zed_depth_camera" />
-    <!-- Publish urdf zed -->
-    <arg name="publish_urdf"          default="false" />'
-    <arg name="initial_pose"                  default="[0.0,0.0,0.0, 0.0,0.0,0.0]" /> <!-- X, Y, Z, (meter) R, P, Y, (radians)-->
-    <!-- ZED -->
-    <node name="zed_wrapper_node" pkg="zed_wrapper" type="zed_wrapper_node" output="screen" required="true"><!-- launch-prefix="valgrind" -->
-	<param name="verbose"              value="true" />
-        <param name="camera_model" value="$(arg camera_model)" />
-        <!-- publish odometry frame -->
-        <param name="publish_tf"            value="$(arg publish_tf)" />
-        <!-- Configuration frame camera -->
-	      <param name="pose_frame"            value="map" />
-        <param name="odometry_frame"        value="$(arg odometry_frame)" />
-        <param name="base_frame"            value="$(arg base_frame)" />
-        <param name="camera_frame"          value="$(arg camera_frame)" />
-        <param name="depth_frame"           value="$(arg depth_frame)" />
-	<param name="left_camera_frame"             value="$(arg robotID)_zed" />
-        <param name="left_camera_optical_frame"     value="$(arg robotID)_zed" />
-        <param name="right_camera_frame"            value="$(arg robotID)_zed" />
-        <param name="right_camera_optical_frame"    value="$(arg robotID)_zed" />
-        <param name="floor_alignment"       value="false" />
-	<rosparam param="initial_tracking_pose" subst_value="True">$(arg initial_pose)</rosparam>
-        <!-- SVO file path -->
-        <param name="svo_filepath"          value="$(arg svo_file)" />
+		<!-- GPU ID-->
+		<arg name="gpu_id"                default="-1" />
+		<!-- Definition coordinate frames -->
+		<arg name="publish_tf"            default="false" />
+		<arg name="odometry_frame"        default="$(arg robotID)_odom" />
+		<arg name="base_frame"            default="$(arg robotID)_base" />
+		<arg name="camera_frame"          default="$(arg robotID)_zed" />
+		<arg name="depth_frame"           default="zed_depth_camera" />
+		<!-- Publish urdf zed -->
+		<arg name="publish_urdf"          default="false" />'
+		<arg name="initial_pose"                  default="[0.0,0.0,0.0, 0.0,0.0,0.0]" /> <!-- X, Y, Z, (meter) R, P, Y, (radians)-->
+		<!-- ZED -->
+		<node name="zed_wrapper_node" pkg="zed_wrapper" type="zed_wrapper_node" output="screen" required="true"><!-- launch-prefix="valgrind" -->
+			<param name="verbose"              value="true" />
+			<param name="camera_model" value="$(arg camera_model)" />
+			<!-- publish odometry frame -->
+			<param name="publish_tf"            value="$(arg publish_tf)" />
+			<!-- Configuration frame camera -->
+			<param name="pose_frame"            value="map" />
+			<param name="odometry_frame"        value="$(arg odometry_frame)" />
+			<param name="base_frame"            value="$(arg base_frame)" />
+			<param name="camera_frame"          value="$(arg camera_frame)" />
+			<param name="depth_frame"           value="$(arg depth_frame)" />
+			<param name="left_camera_frame"             value="$(arg robotID)_zed" />
+			<param name="left_camera_optical_frame"     value="$(arg robotID)_zed" />
+			<param name="right_camera_frame"            value="$(arg robotID)_zed" />
+			<param name="right_camera_optical_frame"    value="$(arg robotID)_zed" />
+			<param name="floor_alignment"       value="false" />
+			<rosparam param="initial_tracking_pose" subst_value="True">$(arg initial_pose)</rosparam>
+			<!-- SVO file path -->
+			<param name="svo_filepath"          value="$(arg svo_file)" />
 
-        <!-- ZED parameters -->
-        <param name="zed_id"                value="$(arg zed_id)" />
-        <param name="serial_number"      value="$(arg serial_number)" />
+			<!-- ZED parameters -->
+			<param name="zed_id"                value="$(arg zed_id)" />
+			<param name="serial_number"      value="$(arg serial_number)" />
 
-        <param name="resolution"            value="3" /> 
-	<!--0=RESOLUTION_HD2K, 1=RESOLUTION_HD1080, 2=RESOLUTION_HD720, 3=RESOLUTION_VGA -->
-        <param name="quality"               value="0" />
-        <param name="sensing_mode"          value="0" />
-        <param name="frame_rate"            value="15" />
-	 <!-- RESOLUTION_HD2K   -> 2208*1242, available framerates: 15 fps.
-         RESOLUTION_HD1080 -> 1920*1080, available framerates: 15, 30 fps.
-         RESOLUTION_HD720  -> 1280*720,  available framerates: 15, 30, 60 fps.
-         RESOLUTION_VGA    -> 672*376,   available framerates: 15, 30, 60, 100 fps. -->
-        <param name="odometry_db"           value="" />
-        <param name="openni_depth_mode"     value="1" />
-        <param name="gpu_id"                value="-1" />
-        <param name="confidence"            value="100" />
-        <param name="gain"                  value="100" />
-        <param name="exposure"              value="100" />
-        <param name="auto_exposure"         value="true" />
-        <param name="depth_stabilization"   value="0" />
-        <!-- ROS topic names -->
-        <param name="rgb_topic"             value="$(arg robotID)/Zed/rgb/image_rect_color" />
-        <param name="rgb_raw_topic"         value="$(arg robotID)/Zed/rgb/image_raw_color" />
-        <param name="rgb_cam_info_topic"    value="$(arg robotID)/Zed/rgb/camera_info" />
-        <param name="rgb_cam_info_raw_topic"    value="$(arg robotID)/Zed/rgb/camera_info_raw" />
+			<param name="resolution"            value="3" /> 
+			<!--0=RESOLUTION_HD2K, 1=RESOLUTION_HD1080, 2=RESOLUTION_HD720, 3=RESOLUTION_VGA -->
+			<param name="quality"               value="0" />
+			<param name="sensing_mode"          value="0" />
+			<param name="frame_rate"            value="15" />
+			<!-- RESOLUTION_HD2K   -> 2208*1242, available framerates: 15 fps.
+	 RESOLUTION_HD1080 -> 1920*1080, available framerates: 15, 30 fps.
+	 RESOLUTION_HD720  -> 1280*720,  available framerates: 15, 30, 60 fps.
+	 RESOLUTION_VGA    -> 672*376,   available framerates: 15, 30, 60, 100 fps. -->
+	<param name="odometry_db"           value="" />
+	<param name="openni_depth_mode"     value="1" />
+	<param name="gpu_id"                value="-1" />
+	<param name="confidence"            value="100" />
+	<param name="gain"                  value="100" />
+	<param name="exposure"              value="100" />
+	<param name="auto_exposure"         value="true" />
+	<param name="depth_stabilization"   value="0" />
+	<!-- ROS topic names -->
+	<param name="rgb_topic"             value="$(arg robotID)/Zed/rgb/image_rect_color" />
+	<param name="rgb_raw_topic"         value="$(arg robotID)/Zed/rgb/image_raw_color" />
+	<param name="rgb_cam_info_topic"    value="$(arg robotID)/Zed/rgb/camera_info" />
+	<param name="rgb_cam_info_raw_topic"    value="$(arg robotID)/Zed/rgb/camera_info_raw" />
 
-        <param name="left_topic"            value="$(arg robotID)/Zed/left/image_rect_color" />
-        <param name="left_raw_topic"        value="$(arg robotID)/Zed/left/image_raw_color" />
-        <param name="left_cam_info_topic"   value="$(arg robotID)/Zed/left/camera_info" />
-        <param name="left_cam_info_raw_topic"   value="$(arg robotID)/Zed/left/camera_info_raw" />
-	
-        <param name="right_topic"           value="$(arg robotID)/Zed/right/image_rect_color" />
-        <param name="right_raw_topic"       value="$(arg robotID)/Zed/right/image_raw_color" />
-        <param name="right_cam_info_topic"  value="$(arg robotID)/Zed/right/camera_info" />
-        <param name="right_cam_info_raw_topic"  value="$(arg robotID)/Zed/right/camera_info_raw" />
+	<param name="left_topic"            value="$(arg robotID)/Zed/left/image_rect_color" />
+	<param name="left_raw_topic"        value="$(arg robotID)/Zed/left/image_raw_color" />
+	<param name="left_cam_info_topic"   value="$(arg robotID)/Zed/left/camera_info" />
+	<param name="left_cam_info_raw_topic"   value="$(arg robotID)/Zed/left/camera_info_raw" />
 
-        <param name="depth_topic"           value="$(arg robotID)/Zed/depth/depth_registered" />
-        <param name="depth_cam_info_topic"  value="$(arg robotID)/Zed/depth/camera_info" />
+	<param name="right_topic"           value="$(arg robotID)/Zed/right/image_rect_color" />
+	<param name="right_raw_topic"       value="$(arg robotID)/Zed/right/image_raw_color" />
+	<param name="right_cam_info_topic"  value="$(arg robotID)/Zed/right/camera_info" />
+	<param name="right_cam_info_raw_topic"  value="$(arg robotID)/Zed/right/camera_info_raw" />
 
-        <param name="point_cloud_topic"     value="$(arg robotID)/Zed/point_cloud/cloud_registered" />
+	<param name="depth_topic"           value="$(arg robotID)/Zed/depth/depth_registered" />
+	<param name="depth_cam_info_topic"  value="$(arg robotID)/Zed/depth/camera_info" />
+
+	<param name="point_cloud_topic"     value="$(arg robotID)/Zed/point_cloud/cloud_registered" />
 	<param name="init_odom_with_first_valid_pose"        value="true" />
-        <param name="odometry_topic"        value="$(arg robotID)/Zed/odom" />
+	<param name="odometry_topic"        value="$(arg robotID)/Zed/odom" />
 
-    </node>
-    
+</node>
+
+<<node pkg="tf" type="static_transform_publisher" name="zed_link_broadcaster" args="-0.12 0 1.28 0 0.354 0 0.935 $(arg robot_name)_base $(arg robot_name)_zed 100" />
+<!--
+<node pkg="tf" type="static_transform_publisher" name="teste" args="0 0 0 0 0 0 1 $(arg robot_name)_odom $(arg robot_name)_base 1" />
+-->
     </launch>

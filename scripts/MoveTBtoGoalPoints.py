@@ -2,7 +2,7 @@
 import rospy
 import actionlib       # Use the actionlib package for client and server
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
-from roboga.srv import SetGetRoute
+from zordon_nav.srv import SetGetRoute
 
 
 # Define Goal Points and orientations for TurtleBot in a list

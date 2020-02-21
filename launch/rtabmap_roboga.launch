@@ -1,35 +1,39 @@
 <?xml version="1.0"?>
 <launch>
-  <group ns="rtabmap">
 
-    <node pkg="nodelet" type="nodelet" name="rgbd_sync" args="standalone rtabmap_ros/rgbd_sync" output="screen">
-      <remap from="rgb/image"        to="/camera/rgb/image_rect_color"/>
-      <remap from="depth/image"      to="/camera/depth_registered/image_raw"/>
-      <remap from="rgb/camera_info"  to="/camera/rgb/camera_info"/>
-      <remap from="rgbd_image"       to="rgbd_image"/> <!-- output -->
+  <arg name="manager" 		      default="visual_manager"/>
+  <arg name="camera" 		        default="camera" />
+  <arg name="approximate_sync" 	default="false"/>
+  <arg name="robot_name"        default="Zordon"/>
 
-      <!-- Should be true for not synchronized camera topics
-           (e.g., false for kinectv2, zed, realsense, true for xtion, kinect360)-->
-      <param name="approx_sync"       value="true"/>
-    </node>
-    <!-- Odometry -->
 
     <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" args="--delete_db_on_start">
-          <param name="frame_id"        type="string" value="Zordon_base"/>
-          <param name="subscribe_depth" type="bool"   value="false"/>
-          <param name="subscribe_rgbd"  type="bool"   value="true"/>
+          <param name="frame_id" type="string" value="$(arg robot_name)_base"/>
 
-	  <remap from="odom"       to="/Zordon/wheels_odom"/>
-	  <remap from="rgbd_image" to="rgbd_image"/>
-	  <remap from="/rtabmap/grid_map" to="/map" />
+          <param name="subscribe_depth" type="bool" value="false"/>
+          <param name="subscribe_rgbd"  type="bool" value="true"/>
+          <param name="subscribe_scan"  type="bool" value="true"/>
 
-          <param name="queue_size"  type="int"  value="10"/>
-          <param name="approx_sync" type="bool" value="true"/>
+          <remap from="odom"        to="$(arg robot_name)/camera/odometry"/>
+          <remap from="scan"        to="$(arg robot_name)/Lidar2D/LidarScan"/>
+          <remap from="rgbd_image"  to="$(arg camera)/RGBD_image"/>
+
+          <param name="queue_size"        type="int" value="10"/>
+          <param name="approx_sync"       value="true"/>
 
           <!-- RTAB-Map's parameters -->
+          <param name="RGBD/NeighborLinkRefining" type="string" value="true"/>
+          <param name="RGBD/ProximityBySpace"     type="string" value="true"/>
           <param name="RGBD/AngularUpdate"        type="string" value="0.01"/>
           <param name="RGBD/LinearUpdate"         type="string" value="0.01"/>
           <param name="RGBD/OptimizeFromGraphEnd" type="string" value="false"/>
+          <param name="Grid/FromDepth"            type="string" value="false"/> <!-- occupancy grid from lidar -->
+          <param name="Reg/Force3DoF"             type="string" value="true"/>
+          <param name="Reg/Strategy"              type="string" value="1"/> <!-- 1=ICP -->
+          
+          <!-- ICP parameters -->
+          <param name="Icp/VoxelSize"                 type="string" value="0.05"/>
+          <param name="Icp/MaxCorrespondenceDistance" type="string" value="0.1"/>
     </node>
-  </group>
+
 </launch>
